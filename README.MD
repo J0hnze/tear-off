@@ -8,7 +8,8 @@ A PRINTABLE TASK & TICKET SYSTEM
 - Tear it off
 - Do the work
 
-*If it isn't printed \n*
+*If it isn't printed *
+
 *it doesn't exist.*
 
 ---
