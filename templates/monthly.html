@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>
+  {{ month }} {{ year }}
+</h1>
+
+<p class="muted">
+  Click a day to add a task for that date
+</p>
+
+<div class="calendar-grid">
+
+  {# Empty cells before the 1st of the month #}
+  {% for _ in range(first_day.weekday()) %}
+    <div class="calendar-cell empty"></div>
+  {% endfor %}
+
+  {# Actual days of the month #}
+  {% for day in range(1, last_day.day + 1) %}
+
+    {% set d = "%04d-%02d-%02d"|format(year, first_day.month, day) %}
+
+    <div
+      class="calendar-cell
+        {% if d == today %}today{% endif %}
+        {% if tasks_by_day.get(d) and tasks_by_day[d]|length >= 4 %}heavy{% endif %}
+      "
+      onclick="window.location.href='/add?due={{ d }}'"
+      style="cursor:pointer;"
+    >
+
+      <div class="calendar-date">
+        {{ day }}
+      </div>
+
+      {% if tasks_by_day.get(d) %}
+        {% for t in tasks_by_day[d] %}
+          <div class="calendar-task priority-{{ t['priority'] }}">
+            {{ t["title"] }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+    </div>
+
+  {% endfor %}
+
+</div>
+
+{% endblock %}

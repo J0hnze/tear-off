@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Today</h1>
+
+<form method="POST" action="/print/all">
+  <button class="btn btn-primary">
+    🖨 Print all
+  </button>
+</form>
+
+<!-- ========================= -->
+<!-- Outstanding -->
+<!-- ========================= -->
+<section class="section">
+  <h2>Outstanding</h2>
+
+  {% if outstanding %}
+    {% for t in outstanding %}
+        <form method="POST" action="/print/ticket/{{ t['id'] }}">
+            <button class="btn">
+             🖨 Print
+            </button>
+        </form>
+      <div class="card task-card">
+        <div class="task-main">
+          <div class="task-title">
+            {{ t["title"] }}
+          </div>
+
+          {% if t["notes"] %}
+            <div class="task-notes">
+              {{ t["notes"] }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="task-meta">
+          <span class="priority">P{{ t["priority"] }}</span>
+
+          {% if t["due_at"] %}
+            <span class="due">
+              Due {{ t["due_at"][:16] }}
+            </span>
+          {% else %}
+            <span class="no-due">
+              No due date
+            </span>
+          {% endif %}
+
+          {% if t["tags"] %}
+            <span class="tags">
+              {{ t["tags"] }}
+            </span>
+          {% endif %}
+        </div>
+
+        <form method="POST" action="/done/{{ t['id'] }}">
+          <button class="btn btn-success" type="submit">
+            ✓ Mark done
+          </button>
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      🎉 Nothing outstanding — you’re clear for today.
+    </div>
+  {% endif %}
+</section>
+
+<!-- ========================= -->
+<!-- Completed Today -->
+<!-- ========================= -->
+<section class="section">
+  <h2>Completed Today</h2>
+
+  {% if completed_today %}
+    {% for t in completed_today %}
+      <div class="card task-card done">
+        <div class="task-main">
+          <div class="task-title done-title">
+            ✓ {{ t["title"] }}
+          </div>
+        </div>
+
+        <div class="task-meta">
+          <span class="completed">
+            Completed {{ t["closed_at"][:16] }}
+          </span>
+
+          {% if t["tags"] %}
+            <span class="tags">
+              {{ t["tags"] }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      Nothing completed yet — you’ve got this 💪
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}

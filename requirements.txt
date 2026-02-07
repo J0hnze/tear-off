@@ -1,0 +1,4 @@
+python-escpos
+pywin32
+flask
+python-dotenv

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Add Ticket</h2>
+
+<form method="post" action="/add">
+  <label>Title</label>
+  <input class="w100" name="title" placeholder="e.g. Finish Jacks Appraisal" required />
+
+  <label>Notes (optional)</label>
+  <textarea class="w100" name="notes" rows="4" placeholder="Any details / next action"></textarea>
+
+  <label>Priority</label>
+  <select class="w100" name="priority">
+    <option value="4">LOW (P4)</option>
+    <option value="3" selected>MEDIUM (P3)</option>
+    <option value="2">HIGH (P2)</option>
+    <option value="1">URGENT (P1)</option>
+  </select>
+
+  <label>Tags (optional)</label>
+  <input class="w100" name="tags" placeholder="work, personal" list="taglist">
+  <datalist id="taglist">
+    {% for t in all_tags %}
+      <option value="{{ t }}"></option>
+    {% endfor %}
+  </datalist>
+
+  <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+
+  <label>Recurring?</label>
+  <select class="w100" name="recurrence">
+    <option value="none" selected>Not recurring</option>
+    <option value="weekdays">Weekdays</option>
+    <option value="mon">Mondays</option>
+    <option value="tue">Tuesdays</option>
+    <option value="wed">Wednesdays</option>
+    <option value="thu">Thursdays</option>
+    <option value="fri">Fridays</option>
+    <option value="sat">Saturdays</option>
+    <option value="sun">Sundays</option>
+  </select>
+
+  <label>Recurring time</label>
+  <input class="w100" type="time" name="recurrence_time" value="09:00">
+
+  <label>Recurring start date (optional)</label>
+  <input class="w100" type="date" name="recurrence_start">
+
+  <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+
+  <label>Due date (for non-recurring tickets)</label>
+<input
+  class="w100"
+  type="date"
+  name="due_date"
+  value="{{ due_prefill if due_prefill else default_date }}"
+>
+
+  <label>Span (for calendar bars)</label>
+    <div class="gridline">
+    <div style="flex:1">
+        <label style="margin-top:0">Start date</label>
+        <input class="w100" type="date" name="start_at">
+    </div>
+
+    <div style="flex:1">
+        <label style="margin-top:0">End date</label>
+        <input class="w100" type="date" name="end_at">
+    </div>
+
+    <div style="min-width:180px">
+        <label style="margin-top:0">All day</label>
+        <select class="w100" name="all_day">
+        <option value="1" selected>Yes (bar)</option>
+        <option value="0">No</option>
+        </select>
+    </div>
+    </div>
+
+<div class="meta">
+  Example: Start=Mon, End=Fri creates a bar across the work week.
+</div>
+
+  <label>Due time (optional)</label>
+  <input class="w100" type="time" name="due_time" value="09:00">
+
+  <div style="margin-top:14px">
+    <button class="btn btn-primary" type="submit">Add</button>
+  </div>
+</form>
+
+{% endblock %}

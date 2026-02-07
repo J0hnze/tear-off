@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Calendar</h2>
+
+{% include "_tag_filter.html" %}
+
+<div class="card">
+  <div class="row" style="gap:10px; flex-wrap:wrap;">
+    <a class="btn" href="/calendar?view=dayGridMonth&tag={{tag}}">Month</a>
+    <a class="btn" href="/calendar?view=timeGridWeek&tag={{tag}}">Week</a>
+    <a class="btn" href="/calendar?view=timeGridDay&tag={{tag}}">Day</a>
+    <a class="btn" href="/calendar?view=listWeek&tag={{tag}}">List</a>
+  </div>
+  <div class="meta" style="margin-top:10px">
+    Tip: create a Mon→Fri bar by setting Start/End dates when adding a ticket (all-day span).
+  </div>
+</div>
+
+<div class="card">
+  <!-- week label gets injected under FullCalendar title -->
+  <div id="weekUnderTitle" class="week-under-title"></div>
+  <div id="calendar"></div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+  // ISO week number (UK-friendly)
+  function isoWeekNumber(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7; // Mon=1..Sun=7
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function updateWeekLabel(calendar) {
+    // Use FullCalendar "anchor" date (changes as you navigate)
+    const anchor = calendar.getDate();
+    const w = isoWeekNumber(anchor);
+
+    const el = document.getElementById("weekUnderTitle");
+    if (el) el.textContent = "Week " + w;
+  }
+
+  (function () {
+    const calEl = document.getElementById("calendar");
+    if (!calEl) return;
+
+    const tag = "{{ tag }}";
+    const initialView = "{{ initial_view }}";
+
+    const calendar = new FullCalendar.Calendar(calEl, {
+      initialView: initialView || "dayGridMonth",
+      height: "auto",
+      firstDay: 1,
+      locale: "en-gb",
+      nowIndicator: true,
+      navLinks: true,
+
+      // IMPORTANT: no left-side week-number column
+      weekNumbers: false,
+
+      // 24-hour time
+      eventTimeFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
+      slotLabelFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
+
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+      },
+
+      // ✅ Month view: show weekday headers only
+      // ✅ Week/Day view: show ONLY day number (5, 6, 7...)
+      dayHeaderContent: function(arg) {
+        const viewType = arg.view.type || "";
+
+        if (viewType.startsWith("timeGrid")) {
+          const dayNum = FullCalendar.formatDate(arg.date, { day: "numeric" });
+          return {
+            html: `<div class="fc-dayhdr-wrap"><div class="fc-dayhdr-daynum">${dayNum}</div></div>`
+          };
+        }
+
+        // dayGridMonth / list views: keep it simple and correct
+        const weekday = FullCalendar.formatDate(arg.date, { weekday: "short" });
+        return { text: weekday };
+      },
+
+      // Update "Week X" under the title whenever dates/view changes
+      datesSet: function() {
+        updateWeekLabel(calendar);
+      },
+
+      events: function(fetchInfo, successCallback, failureCallback) {
+        const url = new URL("/api/events", window.location.origin);
+        url.searchParams.set("start", fetchInfo.startStr);
+        url.searchParams.set("end", fetchInfo.endStr);
+        url.searchParams.set("tag", tag);
+
+        fetch(url.toString(), { credentials: "include" })
+          .then(r => r.json())
+          .then(data => successCallback(data))
+          .catch(err => failureCallback(err));
+      },
+
+      eventClick: function(info) {
+        const p = info.event.extendedProps || {};
+        alert(
+          "Task: " + info.event.title + "\n" +
+          "Priority: " + (p.priority ?? "") + "\n" +
+          "Tags: " + (p.tags ?? "") + "\n" +
+          "Type: " + (p.kind ?? "")
+        );
+      }
+    });
+
+    calendar.render();
+    updateWeekLabel(calendar);
+  })();
+</script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html data-theme="{{ theme }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tickets</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <div class="nav">
+      <a class="btn" href="/today">Today</a>
+      <a class="btn" href="/weekly">This Week</a>
+      <a class="btn" href="/monthly">This Month</a>
+      <a class="btn" href="/tickets">All Open</a>
+      <a class="btn" href="/history">History</a>
+      <a class="btn btn-primary" href="/add">+ Add</a>
+    </div>
+
+    <form method="POST" action="/print/free" class="free-text-form">
+      <input type="text" name="free_text" placeholder="Free text to print..." required>
+      <button class="btn" type="submit">🖨 Print</button>
+    </form>
+
+    <div class="right">
+      {% if theme == "dark" %}
+        <a class="btn" href="/theme/light">☀ Light</a>
+      {% else %}
+        <a class="btn" href="/theme/dark">🌙 Dark</a>
+      {% endif %}
+
+</div>
+
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash {{category}}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const current = (html.getAttribute("data-theme") || "dark").toLowerCase();
+      const next = current === "dark" ? "light" : "dark";
+
+      const btn = document.getElementById("themeToggle");
+      if (!btn) return;
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "/theme/" + next;
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<form method="get" class="filterbar">
+  <label class="filterlabel">Filter tag</label>
+
+  <select name="tag" onchange="this.form.submit()">
+    <option value="all" {% if tag=="all" %}selected{% endif %}>All</option>
+    {% for t in all_tags %}
+      <option value="{{ t }}" {% if tag==t %}selected{% endif %}>{{ t }}</option>
+    {% endfor %}
+  </select>
+
+  <noscript><button class="btn" type="submit">Apply</button></noscript>
+</form>

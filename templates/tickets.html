@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>All Open Tickets</h2>
+
+{% include "_tag_filter.html" %}
+
+{% for t in tickets %}
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="title">#{{t.id}} — {{t.title}}</div>
+        <div class="meta">
+          P{{t.priority}}
+          {% if t.due_at %} • due {{ t.due_at|replace("T"," ") }}{% else %} • no due date{% endif %}
+          {% if t.recurrence and t.recurrence != "none" %} • recurring: {{ t.recurrence }} @ {{ t.recurrence_time }}{% endif %}
+        </div>
+        {% if t.tags %}
+          <div class="meta">tags: {{ t.tags }}</div>
+        {% endif %}
+        {% if t.notes %}<div style="margin-top:8px">{{t.notes}}</div>{% endif %}
+      </div>
+      <form method="post" action="/done/{{t.id}}">
+        <button class="btn" type="submit">Done</button>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+
+{% if not tickets %}
+  <p>No open tickets.</p>
+{% endif %}
+
+{% endblock %}
