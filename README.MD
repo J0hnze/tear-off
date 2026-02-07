@@ -1,17 +1,15 @@
+#TEAR-OFF
 
-=====================================
-             TEAR-OFF
-=====================================
-   A PRINTABLE TASK & TICKET SYSTEM
+---
+A PRINTABLE TASK & TICKET SYSTEM
+- See the task
+- Print the task
+- Tear it off
+- Do the work
 
-   • See the task
-   • Print the task
-   • Tear it off
-   • Do the work
-
-   If it isn't printed,
-   it doesn't exist.
-=====================================
+*If it isn't printed,*
+*it doesn't exist.*
+---
 
 ## Features
 
