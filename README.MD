@@ -173,4 +173,4 @@ WIBNI
 - [ ] A read-only URL protected by Basic Auth
   ===
 
-  *note this was vibe coded late on a friday night with bailieys, so it probly full oh holes if you find somethign add it to an issue and ill fix it :) thanks
+  note:*this was vibe coded late on a friday night with bailieys, so it probly full oh holes if you find somethign add it to an issue and ill fix it :) thanks*
