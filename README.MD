@@ -1,6 +1,16 @@
-# tear-off - Ticket Management System
+=====================================
+             TEAR-OFF
+=====================================
+   A PRINTABLE TASK & TICKET SYSTEM
 
-A lightweight Flask-based ticket management system with **thermal printer integration** for BIXOLON SRP-E300 printers. Manage tasks via web UI and print physical tickets with automatic paper cuts.
+   • See the task
+   • Print the task
+   • Tear it off
+   • Do the work
+
+   If it isn't printed,
+   it doesn't exist.
+=====================================
 
 ## Features
 
@@ -154,3 +164,7 @@ todo
   - [ ] ntfy.sh topic publish
 - [ ] iOS/Android widgets (later)
   - [ ] Simple “Today count” endpoint for a widget consumer
+
+
+  ===
+  *note this was vibe coded late on a friday night with bailieys, so it probly full oh holes if you find somethign add it to an issue and ill fix it :) thanks
