@@ -134,7 +134,7 @@ All settings via environment variables (`.env`):
 ## Supported Platforms
 
 - **Windows** - Full printer support (tested with BIXOLON SRP-E300)
-- **macOS/Linux** - Web UI works, printer requires manual setup with escpos library
+- **macOS/Linux** - Web UI works, printer requires manual setup with escpos library * needs testing more
 
 ## Dependencies
 
