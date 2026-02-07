@@ -46,15 +46,19 @@ Check your printer name:
 python tests/list-printers.py
 ```
 
-Copy `example.env` to `.env` and update:
+Copy the following ` to `.env` and update where needed:
 ```env
-TICKETS_USER=john
-TICKETS_PASS=your-secure-password
+TICKETS_USER=admin
+TICKETS_PASS=changeme
 NO_PRINTER=false
-TICKETS_PRINTER_NAME=BIXOLON SRP-E300
-TICKETS_PRINT_COLS=46
+TICKETS_PRINTER_NAME=BIXOLON SRP-E300 # Exact Windows printer queue name
 TICKETS_HOST=0.0.0.0
 TICKETS_PORT=5000
+TICKETS_DB=tickets.db
+TICKETS_SECRET=change-me-secret
+TICKETS_PRINT_COLS=46
+TICKETS_DEFAULT_TAGS=work,personal
+TICKETS_THEME=dark
 ```
 
 ### 3. Run the app
@@ -62,6 +66,7 @@ TICKETS_PORT=5000
 ```bash
 python app.py
 ```
+*if you change the NO_PRINTER value to true it will just print to the console, i have plans to 'print' the tickets to a text message or tg message but thats for another day*
 
 Visit: `http://localhost:5000`
 
@@ -149,24 +154,21 @@ All settings via environment variables (`.env`):
 
 todo 
 ## TODO / Future Integrations
-- [ ] add support for linux
-- [ ] iCal export / subscription
-  - [ ] Generate an `.ics` file for Today/Weekly/Monthly
-  - [ ] Optional: publish a read-only URL protected by Basic Auth
-- [ ] Telegram notifications
-  - [ ] Send “Today at 09:00” summary to a Telegram chat via bot token
+- [ ] Add support for linux
+- [ ] Export Calendar / subscription
+  - [ ] apple calendar
+  - [ ] google calendar
+- [ ] Optional: publish a read-only URL protected by Basic Auth
+- [ ] SMS/text App notifcations
+  - [ ] SMS integration
+  - [ ] Signal Integration
+  - [ ] Telegram integration
+  - [ ] WhatsApp integration
+  - [ ] Send “Today at 09:00” summary
   - [ ] Send only filtered tags (e.g. work)
-- [ ] Signal notifications
-  - [ ] Send daily/weekly summary via signal-cli (self-hosted)
+  - [ ] Send daily/weekly summary
 - [ ] Email reminders
   - [ ] SMTP support to email Today/Weekly tickets
-- [ ] Webhooks
-  - [ ] Generic webhook POST (for Home Assistant / n8n / Zapier / Make)
-- [ ] Push notifications
-  - [ ] ntfy.sh topic publish
-- [ ] iOS/Android widgets (later)
-  - [ ] Simple “Today count” endpoint for a widget consumer
-
 
   ===
   *note this was vibe coded late on a friday night with bailieys, so it probly full oh holes if you find somethign add it to an issue and ill fix it :) thanks
