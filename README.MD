@@ -152,13 +152,12 @@ All settings via environment variables (`.env`):
 
 ---
 
-todo 
+
 ## TODO / Future Integrations
 - [ ] Add support for linux
 - [ ] Export Calendar / subscription
   - [ ] apple calendar
   - [ ] google calendar
-- [ ] Optional: publish a read-only URL protected by Basic Auth
 - [ ] SMS/text App notifcations
   - [ ] SMS integration
   - [ ] Signal Integration
@@ -170,5 +169,8 @@ todo
 - [ ] Email reminders
   - [ ] SMTP support to email Today/Weekly tickets
 
+WIBNI
+- [ ] A read-only URL protected by Basic Auth
   ===
+
   *note this was vibe coded late on a friday night with bailieys, so it probly full oh holes if you find somethign add it to an issue and ill fix it :) thanks
