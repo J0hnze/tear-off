@@ -1,4 +1,4 @@
-# Print Jobs - Ticket Management System
+# tear-off - Ticket Management System
 
 A lightweight Flask-based ticket management system with **thermal printer integration** for BIXOLON SRP-E300 printers. Manage tasks via web UI and print physical tickets with automatic paper cuts.
 
@@ -20,7 +20,7 @@ A lightweight Flask-based ticket management system with **thermal printer integr
 
 ```bash
 git clone <repo>
-cd printjobs
+cd tear-off
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 source .venv/bin/activate  # macOS/Linux
