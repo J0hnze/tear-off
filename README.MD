@@ -1,14 +1,16 @@
 #TEAR-OFF
 
 ---
+
 A PRINTABLE TASK & TICKET SYSTEM
 - See the task
 - Print the task
 - Tear it off
 - Do the work
 
-*If it isn't printed,*
+*If it isn't printed \n*
 *it doesn't exist.*
+
 ---
 
 ## Features
