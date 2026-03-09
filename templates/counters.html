@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Counters</h1>
+<p class="muted">Separate from tickets. Keep score, increment, and print.</p>
+
+<section class="section">
+  <div class="card">
+    <form method="POST" action="/counters/add" class="row" style="gap:12px; align-items:flex-end;">
+      <div style="flex:1">
+        <label>Description</label>
+        <input class="w100" name="description" placeholder="e.g. Coffees made" required />
+      </div>
+      <button class="btn btn-primary" type="submit">Add Counter</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  {% if counters %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem;">
+      {% for c in counters %}
+      <div class="card">
+        <div class="task-title">{{ c["description"] }}</div>
+        <div class="meta" style="margin:10px 0 14px 0;">Count: <strong>{{ c["count"] }}</strong></div>
+        <div class="row" style="gap:10px;">
+          <form method="POST" action="/counters/inc/{{ c['id'] }}">
+            <button class="btn btn-success" type="submit">+1</button>
+          </form>
+          <form method="POST" action="/counters/print/{{ c['id'] }}">
+            <button class="btn" type="submit">Print</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">No counters yet.</div>
+  {% endif %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>
+  This Week
+  <span class="muted">
+    ({{ week_start.strftime('%b %d') }} - {{ week_end.strftime('%b %d, %Y') }})
+  </span>
+</h1>
+
+<div class="row" style="margin-bottom: 0.75rem; gap: 0.5rem;">
+  <div>
+    <a class="btn" href="/weekly?week_offset={{ week_offset - 1 }}">Prev Week</a>
+    <a class="btn" href="/weekly?week_offset=0">This Week</a>
+    <a class="btn" href="/weekly?week_offset={{ week_offset + 1 }}">Next Week</a>
+  </div>
+</div>
+
+<form method="POST" action="/print/weekly" style="margin-bottom: 1rem;">
+  <input type="hidden" name="week_offset" value="{{ week_offset }}">
+  <button type="submit" class="btn btn-primary" style="background: #4CAF50; padding: 0.75rem 1.5rem;">
+    Print All
+  </button>
+</form>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+  {% for day in day_schedule %}
+    <div class="card" style="padding: 1rem;">
+      <h3 style="margin: 0 0 0.75rem 0; font-size: 1.1em;">
+        <strong>{{ day.name }}</strong>
+      </h3>
+      <p style="margin: 0 0 0.75rem 0; font-size: 0.9em; color: var(--text-muted);">
+        {{ day.date_str }}
+      </p>
+
+      <button
+        type="button"
+        class="btn"
+        style="margin-bottom:0.75rem;"
+        onclick="toggleQuickAdd('{{ day.date_str }}')"
+      >
+        + Quick Add
+      </button>
+
+      <div id="quick-add-{{ day.date_str }}" style="display:none; margin-bottom:0.75rem;">
+        <form method="POST" action="/quick-add-weekly">
+          <input type="hidden" name="start_date" value="{{ day.date_str }}">
+
+          <input
+            class="w100"
+            name="title"
+            placeholder="Task name"
+            required
+            style="margin-bottom:0.5rem;"
+          />
+
+          <div class="gridline" style="gap:0.5rem;">
+            <select name="duration" style="min-width:120px;">
+              <option value="1" selected>1 day</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+            </select>
+
+            <input
+              class="w100"
+              name="tag"
+              placeholder="Tag (work, personal)"
+              required
+            />
+          </div>
+
+          <div style="margin-top:0.5rem;">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </div>
+        </form>
+      </div>
+
+      {% if day.tasks %}
+        {% for t in day.tasks %}
+          <div style="background: var(--bg-secondary); padding: 0.75rem; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid var(--primary);">
+            <div style="font-weight: 500; font-size: 0.95em; margin-bottom: 0.25rem;">{{ t["title"] }}</div>
+            <div style="font-size: 0.8em; color: var(--text-muted);">
+              <span class="priority">P{{ t["priority"] }}</span>
+              {% if t["tags"] %}<span style="margin-left: 0.5rem;">{{ t["tags"] }}</span>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style="color: var(--text-muted); font-size: 0.9em; padding: 0.5rem 0;">No tasks</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<section class="section">
+  <h2>No Date</h2>
+
+  {% if no_date_tasks %}
+    {% for t in no_date_tasks %}
+      <div class="card task-card muted">
+        <div class="task-main">
+          <div class="task-title">
+            {{ t["title"] }}
+          </div>
+        </div>
+
+        <div class="task-meta">
+          <span class="priority">P{{ t["priority"] }}</span>
+
+          {% if t["tags"] %}
+            <span class="tags">{{ t["tags"] }}</span>
+          {% endif %}
+        </div>
+
+        <form method="POST" action="/done/{{ t['id'] }}">
+          <button class="btn" type="submit">
+            Mark done
+          </button>
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      No floating tasks
+    </div>
+  {% endif %}
+</section>
+
+<script>
+  function toggleQuickAdd(dayStr) {
+    const el = document.getElementById("quick-add-" + dayStr);
+    if (!el) return;
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+</script>
+
+{% endblock %}

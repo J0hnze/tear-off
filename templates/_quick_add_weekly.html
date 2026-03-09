@@ -1,0 +1,27 @@
+<div class="card">
+  <form method="post" action="/quick-add-weekly">
+    <div class="row" style="gap:12px; align-items:flex-start;">
+      <div style="flex:1">
+        <input class="w100" name="title" placeholder="Quick add task (e.g. Project work)" required />
+      </div>
+      <button class="btn btn-primary" type="submit">Add</button>
+    </div>
+
+    <div class="gridline">
+      <select name="tag" style="min-width:140px">
+        <option value="work" selected>Work</option>
+        <option value="personal">Personal</option>
+      </select>
+
+      <select name="duration" style="min-width:140px">
+        <option value="1" selected>1 day</option>
+        <option value="2">2 days</option>
+        <option value="3">3 days</option>
+        <option value="4">4 days</option>
+        <option value="5">5 days (Mon-Fri)</option>
+      </select>
+
+      <input type="date" name="start_date" value="{{ week_start.isoformat() }}" />
+    </div>
+  </form>
+</div>

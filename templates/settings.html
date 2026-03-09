@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Settings</h1>
+<p class="muted">Configure print layout and weekly summary format.</p>
+
+<section class="section">
+  <div class="card">
+    <form method="POST" action="/settings">
+      <label>Print width (columns)</label>
+      <input class="w100" type="number" name="print_cols" min="16" max="96" value="{{ print_cols }}" />
+
+      <label>Weekly separator line</label>
+      <input class="w100" name="weekly_separator" value="{{ weekly_separator }}" />
+
+      <label>Weekly header template</label>
+      <input class="w100" name="weekly_header_template" value="{{ weekly_header_template }}" />
+      <div class="meta">Use placeholder: <code>{week}</code></div>
+
+      <label>Weekly line template</label>
+      <input class="w100" name="weekly_line_template" value="{{ weekly_line_template }}" />
+      <div class="meta">Use placeholders: <code>{day}</code>, <code>{title}</code> (optional: <code>{client}</code>)</div>
+
+      <label>Weekly alignment</label>
+      <div class="gridline">
+        <label><input type="radio" name="weekly_align" value="left" {% if weekly_align == "left" %}checked{% endif %}> Left</label>
+        <label><input type="radio" name="weekly_align" value="center" {% if weekly_align == "center" %}checked{% endif %}> Center</label>
+        <label><input type="radio" name="weekly_align" value="right" {% if weekly_align == "right" %}checked{% endif %}> Right</label>
+      </div>
+
+      <label>Weekly font size</label>
+      <div class="gridline">
+        <label><input type="radio" name="weekly_font_size" value="small" {% if weekly_font_size == "small" %}checked{% endif %}> Small</label>
+        <label><input type="radio" name="weekly_font_size" value="medium" {% if weekly_font_size == "medium" %}checked{% endif %}> Medium</label>
+        <label><input type="radio" name="weekly_font_size" value="large" {% if weekly_font_size == "large" %}checked{% endif %}> Large</label>
+      </div>
+
+      <div style="margin-top:10px;">
+        <strong>Weekly summary preview</strong>
+      </div>
+      <pre id="weekly-preview" style="margin:8px 0 14px 0; white-space:pre-wrap; border:1px solid var(--border); border-radius:10px; padding:12px;">---</pre>
+
+      <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+
+      <label>Counter separator line</label>
+      <input class="w100" name="counter_separator" value="{{ counter_separator }}" />
+
+      <label>Counter header template</label>
+      <input class="w100" name="counter_header_template" value="{{ counter_header_template }}" />
+      <div class="meta">Use placeholders: <code>{description}</code>, <code>{count}</code></div>
+
+      <label>Counter description line template</label>
+      <input class="w100" name="counter_description_template" value="{{ counter_description_template }}" />
+      <div class="meta">Use placeholders: <code>{description}</code>, <code>{count}</code></div>
+
+      <label>Counter count line template</label>
+      <input class="w100" name="counter_count_template" value="{{ counter_count_template }}" />
+      <div class="meta">Use placeholders: <code>{description}</code>, <code>{count}</code></div>
+
+      <label>Counter alignment</label>
+      <div class="gridline">
+        <label><input type="radio" name="counter_align" value="left" {% if counter_align == "left" %}checked{% endif %}> Left</label>
+        <label><input type="radio" name="counter_align" value="center" {% if counter_align == "center" %}checked{% endif %}> Center</label>
+        <label><input type="radio" name="counter_align" value="right" {% if counter_align == "right" %}checked{% endif %}> Right</label>
+      </div>
+
+      <label>Counter font size</label>
+      <div class="gridline">
+        <label><input type="radio" name="counter_font_size" value="small" {% if counter_font_size == "small" %}checked{% endif %}> Small</label>
+        <label><input type="radio" name="counter_font_size" value="medium" {% if counter_font_size == "medium" %}checked{% endif %}> Medium</label>
+        <label><input type="radio" name="counter_font_size" value="large" {% if counter_font_size == "large" %}checked{% endif %}> Large</label>
+      </div>
+
+      <div style="margin-top:10px;">
+        <strong>Counter print preview</strong>
+      </div>
+      <pre id="counter-preview" style="margin:8px 0 14px 0; white-space:pre-wrap; border:1px solid var(--border); border-radius:10px; padding:12px;">---</pre>
+
+      <div style="margin-top:14px;">
+        <button class="btn btn-primary" type="submit">Save Settings</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  (function () {
+    function formatTemplate(template, values) {
+      return String(template || "").replace(/\{(\w+)\}/g, function (_, key) {
+        return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : "";
+      });
+    }
+
+    function applyPreview(prefix, preId) {
+      const align = document.querySelector('input[name="' + prefix + '_align"]:checked');
+      const size = document.querySelector('input[name="' + prefix + '_font_size"]:checked');
+      const pre = document.getElementById(preId);
+      if (!pre) return;
+      pre.style.textAlign = align ? align.value : "left";
+      const fontSize = (size && size.value) === "small" ? "12px" : (size && size.value) === "large" ? "18px" : "14px";
+      pre.style.fontSize = fontSize;
+    }
+
+    function buildWeeklyPreview() {
+      const sep = (document.querySelector('input[name="weekly_separator"]') || {}).value || "---";
+      const headerTpl = (document.querySelector('input[name="weekly_header_template"]') || {}).value || "WEEK NUMBER {week}";
+      const lineTpl = (document.querySelector('input[name="weekly_line_template"]') || {}).value || "{day} - {title}";
+      const pre = document.getElementById("weekly-preview");
+      if (!pre) return;
+
+      const days = ["MON", "TUES", "WEDS", "THURS", "FRI"];
+      const lines = [
+        sep,
+        formatTemplate(headerTpl, { week: "10" }),
+        sep
+      ];
+      days.forEach(function (d) {
+        lines.push(formatTemplate(lineTpl, { day: d, title: "Example Title", client: "Example Client" }));
+      });
+      lines.push(sep);
+      pre.textContent = lines.join("\n");
+      applyPreview("weekly", "weekly-preview");
+    }
+
+    function buildCounterPreview() {
+      const sep = (document.querySelector('input[name="counter_separator"]') || {}).value || "---";
+      const headerTpl = (document.querySelector('input[name="counter_header_template"]') || {}).value || "COUNTER";
+      const descTpl = (document.querySelector('input[name="counter_description_template"]') || {}).value || "{description}";
+      const countTpl = (document.querySelector('input[name="counter_count_template"]') || {}).value || "COUNT: {count}";
+      const pre = document.getElementById("counter-preview");
+      if (!pre) return;
+
+      const ctx = { description: "Coffee Sold", count: "12" };
+      pre.textContent = [
+        sep,
+        formatTemplate(headerTpl, ctx),
+        sep,
+        formatTemplate(descTpl, ctx),
+        "",
+        formatTemplate(countTpl, ctx),
+        sep
+      ].join("\n");
+      applyPreview("counter", "counter-preview");
+    }
+
+    function bind() {
+      const weeklyInputs = document.querySelectorAll(
+        'input[name="weekly_separator"], input[name="weekly_header_template"], input[name="weekly_line_template"], input[name="weekly_align"], input[name="weekly_font_size"]'
+      );
+      weeklyInputs.forEach(function (el) {
+        el.addEventListener("input", buildWeeklyPreview);
+        el.addEventListener("change", buildWeeklyPreview);
+      });
+
+      const counterInputs = document.querySelectorAll(
+        'input[name="counter_separator"], input[name="counter_header_template"], input[name="counter_description_template"], input[name="counter_count_template"], input[name="counter_align"], input[name="counter_font_size"]'
+      );
+      counterInputs.forEach(function (el) {
+        el.addEventListener("input", buildCounterPreview);
+        el.addEventListener("change", buildCounterPreview);
+      });
+
+      buildWeeklyPreview();
+      buildCounterPreview();
+    }
+
+    bind();
+  })();
+</script>
+
+{% endblock %}

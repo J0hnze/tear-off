@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>History</h2>
+
+{% if tickets %}
+  {% for t in tickets %}
+    <div class="card">
+      <div class="title">{{ t["title"] }}</div>
+      <div class="meta">
+        Closed {{ t["closed_at"][:16] }}
+        · Priority P{{ t["priority"] }}
+        {% if t["tags"] %}
+          · {{ t["tags"] }}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <em>No completed tickets yet.</em>
+{% endif %}
+
+{% endblock %}
